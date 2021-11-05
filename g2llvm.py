@@ -1,19 +1,25 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import importlib
 import argparse
 import subprocess
+import os
 
 xmltollvm = importlib.import_module('src.xmltollvm')
 opt_verify = importlib.import_module('src.lifting-opt-verify')
 
 # These need to change in your local installation
-ghidra_headless_loc = "/home/tej/buildsGhidra/ghidra_9.1.1_PUBLIC/support/analyzeHeadless"
-prj_dir = "/home/tej/GhidraProjects/"
+ghidra_headless_loc = "ghidra_9.1.1_PUBLIC/support/analyzeHeadless"
+prj_dir = "/tmp/g2llvm"
+try:
+    os.mkdir(prj_dir)
+except FileExistsError:
+    pass
 
 # These shouldn't need to be changed
 prj_name = "lifting"
-xml_script = "./src/GhidraToXML.java"
+xml_script = "GhidraToXML.java"
+script_path = "./src"
 
 # Argument parsing
 parser = argparse.ArgumentParser(description = 'This script lifts a binary from executable to LLVM IR.')
@@ -33,7 +39,7 @@ else:
 
 # Convert P-code to XML
 subprocess.run([ghidra_headless_loc, prj_dir, prj_name, '-import', results.input_file,
-                '-postScript', xml_script, '-overwrite', '-deleteProject'])
+                '-postScript', xml_script, '-scriptPath', script_path, '-overwrite', '-deleteProject'])
 filename = results.input_file.split('/')[-1]
 xmlfile = './' + filename + '.xml'
 subprocess.run(['mv', '/tmp/output.xml', xmlfile])

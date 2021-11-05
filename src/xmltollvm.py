@@ -452,7 +452,8 @@ def populate_cfg(function, builders, blocks):
             elif mnemonic.text == "CAST":
                 raise Exception("Not implemented")
             else:
-                raise Exception("Not a standard pcode instruction")
+                pass
+                # raise Exception("Not a standard pcode instruction")
         block_iterator += 1
         instr += 1
         if block_iterator < len(blocks) and no_branch:
